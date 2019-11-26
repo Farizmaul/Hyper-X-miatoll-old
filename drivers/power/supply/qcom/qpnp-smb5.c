@@ -1641,7 +1641,7 @@ static int smb5_usb_main_set_prop(struct power_supply *psy,
 	struct smb5 *chip = power_supply_get_drvdata(psy);
 	struct smb_charger *chg = &chip->chg;
 	union power_supply_propval pval = {0, };
-	enum power_supply_type __maybe_unused real_chg_type = chg->real_charger_type;
+	enum power_supply_type real_chg_type = chg->real_charger_type;
 	int parallel_output_mode = 0;
 	int rc = 0, offset_ua = 0;
 
@@ -1731,7 +1731,9 @@ static int smb5_usb_main_set_prop(struct power_supply *psy,
 		vote_override(chg->usb_icl_votable, CC_MODE_VOTER,
 				(val->intval < 0)||( chg->cc_un_compliant_detected == true ) ? false : true, val->intval);
 		/* Main ICL updated re-calculate ILIM */
-		rerun_election(chg->fcc_votable);
+		if (real_chg_type == POWER_SUPPLY_TYPE_USB_HVDCP_3 ||
+			real_chg_type == POWER_SUPPLY_TYPE_USB_HVDCP_3P5)
+			rerun_election(chg->fcc_votable);
 		break;
 	case POWER_SUPPLY_PROP_COMP_CLAMP_LEVEL:
 		rc = smb5_set_prop_comp_clamp_level(chg, val);

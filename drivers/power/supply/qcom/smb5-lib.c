@@ -1142,7 +1142,8 @@ int smblib_get_qc3_main_icl_offset(struct smb_charger *chg, int *offset_ua)
 	 * - Output connection topology is VBAT
 	 */
 	if (!is_cp_topo_vbatt(chg) || chg->hvdcp3_standalone_config
-		|| (chg->real_charger_type != POWER_SUPPLY_TYPE_USB_HVDCP_3))
+		|| (chg->real_charger_type != POWER_SUPPLY_TYPE_USB_HVDCP_3)
+		|| (chg->real_charger_type != POWER_SUPPLY_TYPE_USB_HVDCP_3P5))
 		return -EINVAL;
 
 	rc = power_supply_get_property(chg->cp_psy, POWER_SUPPLY_PROP_CP_ENABLE,
@@ -1377,10 +1378,8 @@ static const struct apsd_result *smblib_update_usb_type(struct smb_charger *chg)
 	/* if PD is active, APSD is disabled so won't have a valid result */
 	if (chg->pd_active) {
 		chg->real_charger_type = POWER_SUPPLY_TYPE_USB_PD;
-		chg->usb_psy_desc.type = POWER_SUPPLY_TYPE_USB_PD;
 	} else if (chg->qc3p5_detected) {
 		chg->real_charger_type = POWER_SUPPLY_TYPE_USB_HVDCP_3P5;
-		chg->usb_psy_desc.type = POWER_SUPPLY_TYPE_USB_HVDCP_3P5;
 	} else {
 		/*
 		 * Update real charger type only if its not FLOAT
@@ -1391,7 +1390,6 @@ static const struct apsd_result *smblib_update_usb_type(struct smb_charger *chg)
 			(apsd_result->pst != POWER_SUPPLY_TYPE_USB_HVDCP_3 ||
 			chg->qc3p5_auth_complete)) {
 			chg->real_charger_type = apsd_result->pst;
-			chg->usb_psy_desc.type = apsd_result->pst;
 		}
 	}
 
