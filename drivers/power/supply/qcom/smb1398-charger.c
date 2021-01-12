@@ -673,6 +673,14 @@ static int smb1398_div2_cp_switcher_en(struct smb1398_chip *chip, bool en)
 {
 	int rc;
 
+	rc = smb1398_masked_write(chip, MISC_USB_WLS_SUSPEND_REG,
+			USB_SUSPEND, en ? 0 : USB_SUSPEND);
+	if (rc < 0) {
+		dev_err(chip->dev, "Couldn't write USB_WLS_SUSPEND_REG, rc=%d\n",
+				rc);
+		return rc;
+	}
+
 	rc = smb1398_masked_write(chip, MISC_SL_SWITCH_EN_REG,
 			EN_SWITCHER, en ? EN_SWITCHER : 0);
 	if (rc < 0) {
