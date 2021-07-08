@@ -733,7 +733,7 @@ struct sched_entity *__pick_last_entity(struct cfs_rq *cfs_rq)
 // 	sched_nr_latency = DIV_ROUND_UP(sysctl_sched_latency,
 // 					sysctl_sched_min_granularity);
 
-// #define WRT_SYSCTL(name) \
+/ #define WRT_SYSCTL(name) \
 // 	(normalized_sysctl_##name = sysctl_##name / (factor))
 // 	WRT_SYSCTL(sched_min_granularity);
 // 	WRT_SYSCTL(sched_latency);
